@@ -7,13 +7,15 @@ saves every response into a Google Sheet.
 - `nandita/` → Bride's side RSVP page
 - `index.html` → simple landing page linking to both (optional to share)
 
-Every submission is stored in one Google Sheet with a **Side** column, so you
-can see totals overall and filter per side.
+Every submission is stored in the couple's Google Sheet: groom-side entries
+go to the **Groom** tab and bride-side entries to the **Bride** tab, with
+columns Timestamp, Name, Attending, Guests, Message.
 
 ## Setup — Part 1: Google Sheet + Apps Script (the data backend)
 
-1. Go to [sheets.new](https://sheets.new) and create a new spreadsheet.
-   Name it e.g. **Wedding RSVPs**.
+1. Open the RSVP spreadsheet (the sheet ID is already set in
+   `apps-script/Code.gs`). It should have tabs named **Groom** and **Bride**;
+   header rows are added automatically on first submission.
 2. In the sheet, open **Extensions → Apps Script**.
 3. Delete any code in the editor and paste the full contents of
    [`apps-script/Code.gs`](apps-script/Code.gs). Save (Ctrl+S).
@@ -33,8 +35,8 @@ can see totals overall and filter per side.
    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycb.../exec";
    ```
 
-That's it — the sheet gets an `RSVPs` tab automatically on the first
-submission, with columns: Timestamp, Side, Name, Attending, Guests, Message.
+That's it — each submission lands in the **Groom** or **Bride** tab
+depending on which invitation link the guest used.
 
 ## Setup — Part 2: Hosting on GitHub Pages (the URLs)
 
