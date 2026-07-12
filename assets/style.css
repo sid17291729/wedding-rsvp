@@ -244,10 +244,10 @@ body.landing {
 
 .bg-photo {
   position: fixed;
-  inset: -6%;
+  inset: -2.5%;
   z-index: -1;
-  background: url("couple-bg.jpg") center 20% / cover no-repeat;
-  animation: bg-drift 45s ease-in-out infinite alternate;
+  background: url("couple-bg.jpg") center 30% / cover no-repeat;
+  animation: bg-drift 16s ease-in-out infinite alternate;
   will-change: transform;
 }
 
@@ -263,7 +263,7 @@ body.landing {
     transform: scale(1) translate(0, 0);
   }
   to {
-    transform: scale(1.14) translate(1.5%, -1.5%);
+    transform: scale(1.05) translate(1%, -1%);
   }
 }
 
