@@ -242,11 +242,25 @@ body.landing {
   background: #2e1610;
 }
 
+/* Photo background: the full photo (never cropped) over a blurred fill */
 .bg-photo {
   position: fixed;
-  inset: -2.5%;
+  inset: 0;
   z-index: -1;
-  background: url("couple-bg.jpg") center 30% / cover no-repeat;
+  overflow: hidden;
+}
+
+.bg-photo .bg-blur {
+  position: absolute;
+  inset: -5%;
+  background: url("couple-bg.jpg") center / cover no-repeat;
+  filter: blur(24px) brightness(0.65);
+}
+
+.bg-photo .bg-main {
+  position: absolute;
+  inset: 0;
+  background: url("couple-bg.jpg") center / contain no-repeat;
   animation: bg-drift 16s ease-in-out infinite alternate;
   will-change: transform;
 }
@@ -255,22 +269,126 @@ body.landing {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(rgba(46, 22, 16, 0.45), rgba(46, 22, 16, 0.6));
+  background: linear-gradient(rgba(46, 22, 16, 0.15), rgba(46, 22, 16, 0.4));
 }
 
 @keyframes bg-drift {
   from {
-    transform: scale(1) translate(0, 0);
+    transform: scale(1);
   }
   to {
-    transform: scale(1.05) translate(1%, -1%);
+    transform: scale(1.04) translate(0.5%, -0.5%);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .bg-photo {
+  .bg-photo .bg-main,
+  .scroll-cue {
     animation: none;
   }
+}
+
+/* RSVP pages: full-screen photo hero, form below */
+html {
+  scroll-behavior: smooth;
+}
+
+body.rsvp {
+  display: block;
+  padding: 0;
+  background: var(--cream);
+}
+
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem 1rem;
+  overflow: hidden;
+}
+
+.hero .bg-photo {
+  position: absolute;
+}
+
+.hero-content {
+  position: relative;
+  max-width: 580px;
+  color: #fff;
+}
+
+.hero-content .monogram {
+  color: var(--gold-light);
+}
+
+.hero-content h1 {
+  color: #fff;
+  font-size: 3rem;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.55);
+}
+
+.hero-content .amp {
+  color: var(--gold-light);
+}
+
+.hero-content .side-tag {
+  color: var(--gold-light);
+  border-color: rgba(217, 191, 130, 0.65);
+}
+
+.hero-message {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  margin-bottom: 2.4rem;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.6);
+}
+
+.scroll-cue {
+  display: inline-block;
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 0.85rem 1.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: 999px;
+  background: rgba(46, 22, 16, 0.35);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: cue-bob 1.8s ease-in-out infinite;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.scroll-cue:hover {
+  background: var(--maroon);
+  border-color: var(--maroon);
+}
+
+@keyframes cue-bob {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(6px);
+  }
+}
+
+.form-section {
+  display: flex;
+  justify-content: center;
+  padding: 3.5rem 1rem 4.5rem;
+}
+
+.card h2 {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 600;
+  font-size: 2rem;
+  color: var(--maroon);
+  margin-bottom: 0.4rem;
 }
 
 body.landing .card {
