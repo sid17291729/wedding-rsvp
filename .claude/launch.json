@@ -3,7 +3,7 @@
   "configurations": [
     {
       "name": "rsvp-site",
-      "runtimeExecutable": "python",
+      "runtimeExecutable": "C:\\Users\\OMEN\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
       "runtimeArgs": ["-m", "http.server", "8123"],
       "port": 8123
     }

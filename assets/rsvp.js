@@ -1,4 +1,5 @@
 const form = document.getElementById("rsvp-form");
+const formIntro = document.getElementById("form-intro");
 const guestsField = document.getElementById("guests-field");
 const thankYou = document.getElementById("thank-you");
 const thankYouText = document.getElementById("thank-you-text");
@@ -42,6 +43,7 @@ form.addEventListener("submit", async (e) => {
       ? "We can't wait to celebrate with you!"
       : "We're sorry you can't make it — thank you for letting us know.";
     form.classList.add("hidden");
+    if (formIntro) formIntro.classList.add("hidden");
     thankYou.classList.remove("hidden");
   } catch (err) {
     formError.textContent =

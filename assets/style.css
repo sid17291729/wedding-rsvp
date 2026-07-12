@@ -203,6 +203,7 @@ button[type="submit"]:disabled {
 #guests-field.hidden,
 #thank-you.hidden,
 #rsvp-form.hidden,
+#form-intro.hidden,
 #form-error.hidden {
   display: none;
 }

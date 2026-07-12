@@ -8,7 +8,7 @@
  */
 
 var SPREADSHEET_ID = "1K8y7N59tV47CxEYDeZGzEnHppT_Xg7-TbchB7IKZ69Q";
-var HEADERS = ["Timestamp", "Name", "Attending", "Guests", "Message"];
+var HEADERS = ["Timestamp", "Name", "Phone", "Attending", "Guests", "Message"];
 
 function doPost(e) {
   var lock = LockService.getScriptLock();
@@ -37,6 +37,7 @@ function doPost(e) {
     sheet.appendRow([
       new Date(),
       p.name || "",
+      "'" + (p.phone || ""), // leading apostrophe keeps Sheets from mangling +91… numbers
       p.attending || "",
       p.guests || "",
       p.message || ""
