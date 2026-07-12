@@ -5,11 +5,11 @@ const thankYouText = document.getElementById("thank-you-text");
 const formError = document.getElementById("form-error");
 const submitBtn = form.querySelector("button[type='submit']");
 
-// Guest count only matters if they are attending
+// Guest count is irrelevant when declining — hide it then
 form.querySelectorAll("input[name='attending']").forEach((radio) => {
   radio.addEventListener("change", () => {
-    const attending = form.attending.value === "Yes";
-    guestsField.classList.toggle("hidden", !attending);
+    const declining = form.attending.value === "No";
+    guestsField.classList.toggle("hidden", declining);
   });
 });
 
