@@ -238,6 +238,22 @@ button[type="submit"]:disabled {
 }
 
 /* Landing page */
+body.landing {
+  background-image:
+    linear-gradient(rgba(46, 22, 16, 0.5), rgba(46, 22, 16, 0.65)),
+    url("couple-bg.jpg");
+  background-size: cover;
+  background-position: center 30%;
+  background-repeat: no-repeat;
+}
+
+body.landing .card {
+  background: rgba(255, 253, 249, 0.92);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+
 .couple-photo {
   width: 210px;
   height: 265px;
