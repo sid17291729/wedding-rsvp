@@ -391,10 +391,29 @@ body.rsvp {
   margin-bottom: 0.4rem;
 }
 
-body.landing .card {
-  background: rgba(255, 253, 249, 0.92);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+.landing-content {
+  position: relative;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+}
+
+.landing-content .monogram {
+  color: var(--gold-light);
+}
+
+.landing-content h1 {
+  color: #fff;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.55);
+}
+
+.landing-content .amp {
+  color: var(--gold-light);
+}
+
+.landing-content .invite-line {
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.6);
 }
 
 
@@ -427,12 +446,16 @@ body.landing .card {
 .landing-links a {
   display: block;
   padding: 1rem;
-  border: 1px solid var(--gold-light);
+  border: 1px solid rgba(217, 191, 130, 0.7);
   border-radius: 10px;
   text-decoration: none;
-  color: var(--maroon);
+  color: #fff;
   font-size: 1.05rem;
   letter-spacing: 0.08em;
+  background: rgba(46, 22, 16, 0.4);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
   transition: all 0.2s;
 }
 
