@@ -239,12 +239,38 @@ button[type="submit"]:disabled {
 
 /* Landing page */
 body.landing {
-  background-image:
-    linear-gradient(rgba(46, 22, 16, 0.5), rgba(46, 22, 16, 0.65)),
-    url("couple-bg.jpg");
-  background-size: cover;
-  background-position: center 30%;
-  background-repeat: no-repeat;
+  background: #2e1610;
+}
+
+.bg-photo {
+  position: fixed;
+  inset: -6%;
+  z-index: -1;
+  background: url("couple-bg.jpg") center 20% / cover no-repeat;
+  animation: bg-drift 45s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.bg-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(46, 22, 16, 0.45), rgba(46, 22, 16, 0.6));
+}
+
+@keyframes bg-drift {
+  from {
+    transform: scale(1) translate(0, 0);
+  }
+  to {
+    transform: scale(1.14) translate(1.5%, -1.5%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-photo {
+    animation: none;
+  }
 }
 
 body.landing .card {
