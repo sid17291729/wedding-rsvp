@@ -4,4 +4,4 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbziWIQ3MnCTDVXDP9MMX
 
 // Paste your Google OAuth Client ID here (ends in .apps.googleusercontent.com).
 // See README.md "Google Sign-In setup" for how to create it.
-const GOOGLE_CLIENT_ID = "PASTE_YOUR_OAUTH_CLIENT_ID_HERE.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID = "973698773655-dels4j40amar5trtbm60eaombdrstrpm.apps.googleusercontent.com";

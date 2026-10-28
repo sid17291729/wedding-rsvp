@@ -19,7 +19,7 @@ var DATA_SHEET = "RSVPs";
 var HEADERS = ["Timestamp", "Name", "Email", "Phone", "Attending", "Guests", "Message", "Side"];
 
 // Must match GOOGLE_CLIENT_ID in assets/config.js.
-var CLIENT_ID = "PASTE_YOUR_OAUTH_CLIENT_ID_HERE.apps.googleusercontent.com";
+var CLIENT_ID = "973698773655-dels4j40amar5trtbm60eaombdrstrpm.apps.googleusercontent.com";
 
 function doPost(e) {
   var lock = LockService.getScriptLock();
