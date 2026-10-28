@@ -343,7 +343,8 @@ body.rsvp {
 }
 
 .hero-content .monogram {
-  color: var(--gold-light);
+  color: #f6dd93;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
 }
 
 .hero-content h1 {
@@ -421,7 +422,8 @@ body.rsvp {
 }
 
 .landing-content .monogram {
-  color: var(--gold-light);
+  color: #f6dd93;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
 }
 
 .landing-content h1 {
