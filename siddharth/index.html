@@ -31,16 +31,30 @@
 
   <section class="form-section" id="rsvp">
     <main class="card">
-      <div id="form-intro">
+      <div id="signin-gate">
         <div class="monogram">RSVP</div>
         <h2>Kindly Respond</h2>
-        <p class="invite-line">We would love to know if you can join us.</p>
+        <p class="invite-line">Please sign in with Google so we can save your RSVP — and so you can come back and edit it anytime.</p>
+        <div id="google-btn"></div>
+        <p id="signin-error" class="hidden"></p>
       </div>
 
-      <form id="rsvp-form">
+      <div id="form-intro" class="hidden">
+        <div class="monogram">RSVP</div>
+        <h2 id="form-heading">Kindly Respond</h2>
+        <p class="invite-line" id="form-subtitle">We would love to know if you can join us.</p>
+        <p id="signed-in-as" class="signed-in"></p>
+      </div>
+
+      <form id="rsvp-form" class="hidden">
         <div class="field">
           <label for="name">Your Full Name</label>
           <input type="text" id="name" name="name" required autocomplete="name" placeholder="e.g. Rahul Sharma" />
+        </div>
+
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" readonly />
         </div>
 
         <div class="field">
@@ -72,7 +86,7 @@
           <textarea id="message" name="message" placeholder="Your wishes…"></textarea>
         </div>
 
-        <button type="submit">Send RSVP</button>
+        <button type="submit" id="submit-btn">Send RSVP</button>
         <p id="form-error" class="hidden"></p>
       </form>
 
@@ -85,6 +99,7 @@
     </main>
   </section>
 
+  <script src="https://accounts.google.com/gsi/client"></script>
   <script src="../assets/config.js"></script>
   <script src="../assets/rsvp.js"></script>
 </body>

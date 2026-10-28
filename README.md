@@ -7,36 +7,54 @@ saves every response into a Google Sheet.
 - `nandita/` → Bride's side RSVP page
 - `index.html` → simple landing page linking to both (optional to share)
 
-Every submission is stored in the couple's Google Sheet: groom-side entries
-go to the **Groom** tab and bride-side entries to the **Bride** tab, with
-columns Timestamp, Name, Attending, Guests, Message.
+Guests sign in with Google, so each person has **one RSVP they can come back
+and edit**. All responses are stored in a single **RSVPs** tab (columns
+Timestamp, Name, Email, Phone, Attending, Guests, Message, Side), and two
+live, auto-updating views — **Groom** and **Bride** — are generated from it
+for sharing with organizers, each with a headcount summary at the top.
 
-## Setup — Part 1: Google Sheet + Apps Script (the data backend)
+## Setup — Part 1: Google Sign-In (OAuth Client ID)
 
-1. Open the RSVP spreadsheet (the sheet ID is already set in
-   `apps-script/Code.gs`). It should have tabs named **Groom** and **Bride**;
-   header rows are added automatically on first submission.
-2. In the sheet, open **Extensions → Apps Script**.
-3. Delete any code in the editor and paste the full contents of
-   [`apps-script/Code.gs`](apps-script/Code.gs). Save (Ctrl+S).
-4. Click **Deploy → New deployment**.
-   - Click the gear icon and choose **Web app**.
-   - *Execute as*: **Me**
-   - *Who has access*: **Anyone** (required so guests can submit without logging in)
-   - Click **Deploy** and authorize the script when prompted
-     (you may need to click *Advanced → Go to … (unsafe)* — this is normal
-     for your own scripts).
-5. Copy the **Web app URL** (it looks like
-   `https://script.google.com/macros/s/AKfycb.../exec`).
-6. Open [`assets/config.js`](assets/config.js) in this project and paste that
-   URL in place of the placeholder:
+1. Go to [console.cloud.google.com](https://console.cloud.google.com) and
+   create a project (e.g. *Wedding RSVP*).
+2. **APIs & Services → OAuth consent screen** → **External** → fill in app
+   name, your support email, developer email. The default non-sensitive scopes
+   (email, profile, openid) are all that's needed, so no verification review is
+   required. **Publish** the app to *Production* (otherwise it's limited to 100
+   test users and shows an "unverified" warning).
+3. **APIs & Services → Credentials → Create Credentials → OAuth client ID** →
+   Application type **Web application**.
+4. Under **Authorized JavaScript origins**, add (origin only — no path, no
+   trailing slash):
+   - `https://sid17291729.github.io`
+   - `http://localhost:8123` (for local testing)
+5. Copy the **Client ID** (ends in `.apps.googleusercontent.com`) and paste it
+   into **both**:
+   - [`assets/config.js`](assets/config.js) → `GOOGLE_CLIENT_ID`
+   - [`apps-script/Code.gs`](apps-script/Code.gs) → `CLIENT_ID`
 
-   ```js
-   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycb.../exec";
-   ```
+   (They must match — the backend only accepts sign-in tokens issued for this
+   exact Client ID.)
 
-That's it — each submission lands in the **Groom** or **Bride** tab
-depending on which invitation link the guest used.
+## Setup — Part 2: Google Sheet + Apps Script (the data backend)
+
+1. Open the RSVP spreadsheet (its ID is already set in `apps-script/Code.gs`).
+2. **Extensions → Apps Script**, delete any code, and paste the full contents
+   of [`apps-script/Code.gs`](apps-script/Code.gs). Save (Ctrl+S).
+3. In the editor's function dropdown, select **setupSheets** and click **Run**.
+   Authorize when prompted. This creates the **RSVPs** master tab and the live
+   **Groom** / **Bride** views. *(This rewrites the Groom/Bride tabs as filtered
+   views — move any real data out first. Test rows can be ignored.)*
+4. **Deploy → New deployment → Web app** → *Execute as* **Me**, *Who has
+   access* **Anyone** → **Deploy**, authorize, and copy the **Web app URL**
+   (`https://script.google.com/macros/s/AKfycb.../exec`).
+5. Paste that URL into [`assets/config.js`](assets/config.js) → `SCRIPT_URL`.
+
+That's it — each guest signs in, their one response lands in the **RSVPs** tab
+tagged with their side, and the Groom/Bride views update automatically.
+
+> After **editing** `Code.gs` later, redeploy with **Deploy → Manage
+> deployments → ✏️ Edit → Version: New version**. The web app URL stays the same.
 
 ## Setup — Part 2: Hosting on GitHub Pages (the URLs)
 
@@ -69,11 +87,12 @@ Share each link with the respective side's guests.
 Open a terminal in this folder and run:
 
 ```
-python -m http.server 8000
+python -m http.server 8123
 ```
 
-Then visit `http://localhost:8000/siddharth/` and `http://localhost:8000/nandita/`.
-Submissions work locally too once `config.js` has the real script URL.
+Then visit `http://localhost:8123/siddharth/` and `http://localhost:8123/nandita/`.
+Google sign-in works locally only if `http://localhost:8123` is listed as an
+authorized JavaScript origin on the OAuth Client ID (see Part 1).
 
 ## Customizing
 
@@ -81,5 +100,5 @@ Submissions work locally too once `config.js` has the real script URL.
   `nandita/index.html`.
 - **Colors**: tweak the CSS variables at the top of `assets/style.css`.
 - **Form fields**: add inputs in both HTML files (give them a `name`
-  attribute) and add a matching column + `p.<name>` entry in
-  `apps-script/Code.gs`, then create a **new deployment** of the script.
+  attribute) and add a matching column to `HEADERS` + a `p.<name>` entry in
+  `apps-script/Code.gs`, then redeploy a **new version** of the script.

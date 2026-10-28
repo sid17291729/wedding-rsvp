@@ -204,8 +204,29 @@ button[type="submit"]:disabled {
 #thank-you.hidden,
 #rsvp-form.hidden,
 #form-intro.hidden,
+#signin-gate.hidden,
+#signin-error.hidden,
 #form-error.hidden {
   display: none;
+}
+
+#google-btn {
+  display: flex;
+  justify-content: center;
+  margin: 1.6rem 0 0.4rem;
+}
+
+.signed-in {
+  font-size: 0.85rem;
+  color: #6b5647;
+  margin-top: 0.5rem;
+}
+
+#signin-error {
+  margin-top: 1rem;
+  color: #a33;
+  font-size: 0.9rem;
+  text-align: center;
 }
 
 #thank-you {
