@@ -82,7 +82,6 @@ async function handleCredentialResponse(response) {
       const body = new URLSearchParams();
       body.set("action", "lookup");
       body.set("credential", idToken);
-      body.set("side", SIDE);
       const res = await fetch(SCRIPT_URL, { method: "POST", body });
       const out = await res.json();
       if (out.result === "success" && out.found && out.entry) {
@@ -179,10 +178,13 @@ form.addEventListener("submit", async (e) => {
     formIntro.classList.add("hidden");
     thankYou.classList.remove("hidden");
   } catch (err) {
+    const code = String(err.message);
     showFormError(
-      String(err.message) === "auth"
+      code === "auth"
         ? "Your sign-in expired — please refresh the page and sign in again."
-        : "Something went wrong saving your RSVP. Please try again, or contact us directly."
+        : code === "busy"
+          ? "Lots of guests are responding right now — please wait a few seconds and try again."
+          : "Something went wrong saving your RSVP. Please try again, or contact us directly."
     );
     submitBtn.disabled = false;
     submitBtn.textContent = label;

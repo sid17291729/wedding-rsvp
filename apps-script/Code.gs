@@ -32,60 +32,75 @@ var INVITE_GROUPS = [
 var CLIENT_ID = "973698773655-dels4j40amar5trtbm60eaombdrstrpm.apps.googleusercontent.com";
 
 function doPost(e) {
-  var lock = LockService.getScriptLock();
-  lock.tryLock(10000);
-
   try {
     var p = (e && e.parameter) || {};
 
-    // Trust nothing from the browser except a Google-verified identity token.
+    // Verify the Google identity token outside the lock so network I/O runs in parallel.
     var claims = verifyToken(p.credential);
     if (!claims) return json({ result: "error", error: "auth" });
     var email = claims.email;
 
-    var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-    var sheet = getDataSheet(ss);
     var action = p.action || "submit";
     var group = cleanGroup(p.side);
 
+    // Read-only lookup needs no write lock — signing-in guests won't block submits.
     if (action === "lookup") {
-      var hit = findRow(sheet, email, p.side ? group : null);
-      if (hit) {
-        return json({ result: "success", found: true, entry: rowToEntry(hit.values) });
+      var ssLookup = SpreadsheetApp.openById(SPREADSHEET_ID);
+      var sheetLookup = ssLookup.getSheetByName(DATA_SHEET);
+      var hits = sheetLookup ? findRowsByEmail(sheetLookup, email) : [];
+      if (hits.length > 0) {
+        return json({ result: "success", found: true, entry: rowToEntry(hits[hits.length - 1].values) });
       }
       return json({ result: "success", found: false });
     }
 
-    // Ensure this link's dedicated tab exists in the spreadsheet
-    if (INVITE_GROUPS.indexOf(group) !== -1 && !ss.getSheetByName(group)) {
-      buildSideView(ss, group);
+    // Serialize writes only; return "busy" instead of writing unlocked if overloaded.
+    var lock = LockService.getScriptLock();
+    if (!lock.tryLock(25000)) {
+      return json({ result: "error", error: "busy" });
     }
 
-    // action === "submit" -> create or update this email's single row for this link
-    var attending = p.attending || "";
-    var guests = attending === "Yes" ? Number(p.guests || 0) : 0;
-    var row = [
-      new Date(),
-      p.name || claims.name || "",
-      email,
-      "'" + (p.phone || ""), // leading apostrophe keeps Sheets from mangling +91… numbers
-      attending,
-      guests,
-      p.message || "",
-      group
-    ];
+    try {
+      var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+      var sheet = getDataSheet(ss);
 
-    var existing = findRow(sheet, email, group);
-    if (existing) {
-      sheet.getRange(existing.rowIndex, 1, 1, HEADERS.length).setValues([row]);
-      return json({ result: "success", updated: true });
+      // Ensure this link's dedicated tab exists in the spreadsheet
+      if (INVITE_GROUPS.indexOf(group) !== -1 && !ss.getSheetByName(group)) {
+        buildSideView(ss, group);
+      }
+
+      // action === "submit" -> globally unique per email across all links;
+      // submitting on a different link updates Side and moves the entry to that tab.
+      var attending = p.attending || "";
+      var guests = attending === "Yes" ? Number(p.guests || 0) : 0;
+      var row = [
+        new Date(),
+        p.name || claims.name || "",
+        email,
+        "'" + (p.phone || ""), // leading apostrophe keeps Sheets from mangling +91… numbers
+        attending,
+        guests,
+        p.message || "",
+        group
+      ];
+
+      var matches = findRowsByEmail(sheet, email);
+      if (matches.length > 0) {
+        sheet.getRange(matches[0].rowIndex, 1, 1, HEADERS.length).setValues([row]);
+        for (var j = matches.length - 1; j >= 1; j--) {
+          sheet.deleteRow(matches[j].rowIndex);
+        }
+        SpreadsheetApp.flush();
+        return json({ result: "success", updated: true });
+      }
+      sheet.appendRow(row);
+      SpreadsheetApp.flush();
+      return json({ result: "success", created: true });
+    } finally {
+      lock.releaseLock();
     }
-    sheet.appendRow(row);
-    return json({ result: "success", created: true });
   } catch (err) {
     return json({ result: "error", error: String(err) });
-  } finally {
-    lock.releaseLock();
   }
 }
 
@@ -121,18 +136,17 @@ function getDataSheet(ss) {
   return sheet;
 }
 
-function findRow(sheet, email, group) {
+function findRowsByEmail(sheet, email) {
   var last = sheet.getLastRow();
-  if (last < 2) return null;
+  if (last < 2) return [];
   var rows = sheet.getRange(2, 1, last - 1, HEADERS.length).getValues();
+  var matches = [];
   for (var i = 0; i < rows.length; i++) {
-    var rowEmail = String(rows[i][2]).toLowerCase();
-    var rowGroup = String(rows[i][7]);
-    if (rowEmail === email && (!group || rowGroup === group)) {
-      return { rowIndex: i + 2, values: rows[i] };
+    if (String(rows[i][2]).toLowerCase() === email) {
+      matches.push({ rowIndex: i + 2, values: rows[i] });
     }
   }
-  return null;
+  return matches;
 }
 
 function rowToEntry(v) {

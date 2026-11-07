@@ -12,10 +12,11 @@ saves every response into a Google Sheet.
   - `nandita/reception/` → Reception only
 - `index.html` → simple landing page linking to both main pages (optional to share)
 
-Guests sign in with Google, so each person has **one RSVP they can come back
-and edit** per invitation link. All responses are stored in a single **RSVPs**
-tab (columns Timestamp, Name, Email, Phone, Attending, Guests, Message, Side),
-and **5 live, auto-updating tabs** (`Bride - All Events`,
+Guests sign in with Google, so each person has **one globally unique RSVP they
+can come back and edit** (if they submit again on a different invitation link,
+their entry automatically moves to that link's tab). All responses are stored in
+a single **RSVPs** tab (columns Timestamp, Name, Email, Phone, Attending,
+Guests, Message, Side), and **5 live, auto-updating tabs** (`Bride - All Events`,
 `Bride - Sangeet & Reception`, `Bride - Reception`, `Groom - All Events`, and
 `Groom - Wedding & Reception`) are generated in the same sheet — each with its
 own headcount summary at the top.
