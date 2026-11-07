@@ -553,8 +553,9 @@ body.rsvp {
 }
 
 .event-note {
-  display: inline-block;
-  margin-top: 1.15rem;
+  display: block;
+  width: fit-content;
+  margin: 1.05rem auto 0;
   padding: 0.35rem 0.9rem;
   font-size: 0.8rem;
   letter-spacing: 0.08em;
@@ -565,21 +566,25 @@ body.rsvp {
 }
 
 .event-map-link {
-  display: inline-block;
-  margin-top: 0.85rem;
-  font-size: 0.82rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin: 0.65rem auto 0;
+  color: var(--maroon);
+  background: var(--cream);
+  border: 1px solid rgba(176, 141, 62, 0.5);
+  border-radius: 50%;
   text-decoration: none;
-  border-bottom: 1px solid rgba(176, 141, 62, 0.45);
-  padding-bottom: 0.1rem;
-  transition: color 0.2s, border-color 0.2s;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s;
 }
 
 .event-map-link:hover {
-  color: var(--maroon);
+  background: var(--maroon);
+  color: #fff;
   border-color: var(--maroon);
+  transform: translateY(-2px);
 }
 
 .events-cta {

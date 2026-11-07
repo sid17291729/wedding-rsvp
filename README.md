@@ -7,9 +7,9 @@ saves every response into a Google Sheet.
   - `siddharth/` → All 4 events (Haldi, Sangeet, Wedding, Reception)
   - `siddharth/wedding-reception/` → Wedding & Reception
 - **Bride's side (`nandita/`):**
-  - `nandita/` → All 4 events (Haldi, Sangeet, Wedding, Reception)
-  - `nandita/sangeet-reception/` → Sangeet & Reception
-  - `nandita/reception/` → Reception only
+  - `nandita/` → All 4 events (Haldi Ceremony, Cocktail, Wedding Ceremony, Wedding Reception)
+  - `nandita/cocktail-reception/` → Cocktail & Wedding Reception
+  - `nandita/reception/` → Wedding Reception only
 - `index.html` → simple landing page linking to both main pages (optional to share)
 
 Guests sign in with Google, so each person has **one globally unique RSVP they
@@ -17,7 +17,7 @@ can come back and edit** (if they submit again on a different invitation link,
 their entry automatically moves to that link's tab). All responses are stored in
 a single **RSVPs** tab (columns Timestamp, Name, Email, Phone, Attending,
 Guests, Message, Side), and **5 live, auto-updating tabs** (`Bride - All Events`,
-`Bride - Sangeet & Reception`, `Bride - Reception`, `Groom - All Events`, and
+`Bride - Cocktail & Reception`, `Bride - Reception`, `Groom - All Events`, and
 `Groom - Wedding & Reception`) are generated in the same sheet — each with its
 own headcount summary at the top.
 
