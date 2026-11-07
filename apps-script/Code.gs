@@ -1,22 +1,32 @@
 /**
  * Wedding RSVP backend — Google-login RSVP with one editable entry per email.
  *
- * All responses are stored in a single master "RSVPs" tab. Two live, filtered
- * views ("Groom" and "Bride") are generated for sharing with organizers.
+ * All responses are stored in a single master "RSVPs" tab. Five live, filtered
+ * views (3 for Bride's links, 2 for Groom's links) are generated in separate
+ * tabs within the same spreadsheet for sharing with organizers.
  *
  * One-time setup after pasting this file:
  *   1. Set CLIENT_ID below to the same OAuth Client ID the website uses.
  *   2. In the editor, select setupSheets from the function list and click Run
- *      (authorize when prompted). This creates the RSVPs tab and the two views.
+ *      (authorize when prompted). This creates the RSVPs tab and all 5 link tabs.
  *   3. Deploy -> New deployment -> Web app (Execute as: Me, Who has access: Anyone).
  *
  * After any later edit, redeploy with Deploy -> Manage deployments -> Edit ->
- * Version: New version. The web app URL stays the same.
+ * Version: New version (and re-run setupSheets if tab definitions changed).
+ * The web app URL stays the same.
  */
 
 var SPREADSHEET_ID = "1K8y7N59tV47CxEYDeZGzEnHppT_Xg7-TbchB7IKZ69Q";
 var DATA_SHEET = "RSVPs";
 var HEADERS = ["Timestamp", "Name", "Email", "Phone", "Attending", "Guests", "Message", "Side"];
+
+var INVITE_GROUPS = [
+  "Bride - All Events",
+  "Bride - Sangeet & Reception",
+  "Bride - Reception",
+  "Groom - All Events",
+  "Groom - Wedding & Reception"
+];
 
 // Must match GOOGLE_CLIENT_ID in assets/config.js.
 var CLIENT_ID = "973698773655-dels4j40amar5trtbm60eaombdrstrpm.apps.googleusercontent.com";
@@ -33,18 +43,25 @@ function doPost(e) {
     if (!claims) return json({ result: "error", error: "auth" });
     var email = claims.email;
 
-    var sheet = getDataSheet();
+    var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    var sheet = getDataSheet(ss);
     var action = p.action || "submit";
+    var group = cleanGroup(p.side);
 
     if (action === "lookup") {
-      var hit = findRowByEmail(sheet, email);
+      var hit = findRow(sheet, email, p.side ? group : null);
       if (hit) {
         return json({ result: "success", found: true, entry: rowToEntry(hit.values) });
       }
       return json({ result: "success", found: false });
     }
 
-    // action === "submit" -> create or update this email's single row
+    // Ensure this link's dedicated tab exists in the spreadsheet
+    if (INVITE_GROUPS.indexOf(group) !== -1 && !ss.getSheetByName(group)) {
+      buildSideView(ss, group);
+    }
+
+    // action === "submit" -> create or update this email's single row for this link
     var attending = p.attending || "";
     var guests = attending === "Yes" ? Number(p.guests || 0) : 0;
     var row = [
@@ -55,10 +72,10 @@ function doPost(e) {
       attending,
       guests,
       p.message || "",
-      cleanSide(p.side)
+      group
     ];
 
-    var existing = findRowByEmail(sheet, email);
+    var existing = findRow(sheet, email, group);
     if (existing) {
       sheet.getRange(existing.rowIndex, 1, 1, HEADERS.length).setValues([row]);
       return json({ result: "success", updated: true });
@@ -92,8 +109,8 @@ function verifyToken(token) {
 
 // --- Sheet helpers --------------------------------------------------------
 
-function getDataSheet() {
-  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+function getDataSheet(ss) {
+  ss = ss || SpreadsheetApp.openById(SPREADSHEET_ID);
   var sheet = ss.getSheetByName(DATA_SHEET);
   if (!sheet) sheet = ss.insertSheet(DATA_SHEET);
   if (sheet.getLastRow() === 0) {
@@ -104,14 +121,15 @@ function getDataSheet() {
   return sheet;
 }
 
-function findRowByEmail(sheet, email) {
+function findRow(sheet, email, group) {
   var last = sheet.getLastRow();
   if (last < 2) return null;
-  var emails = sheet.getRange(2, 3, last - 1, 1).getValues(); // column C = Email
-  for (var i = 0; i < emails.length; i++) {
-    if (String(emails[i][0]).toLowerCase() === email) {
-      var rowIndex = i + 2;
-      return { rowIndex: rowIndex, values: sheet.getRange(rowIndex, 1, 1, HEADERS.length).getValues()[0] };
+  var rows = sheet.getRange(2, 1, last - 1, HEADERS.length).getValues();
+  for (var i = 0; i < rows.length; i++) {
+    var rowEmail = String(rows[i][2]).toLowerCase();
+    var rowGroup = String(rows[i][7]);
+    if (rowEmail === email && (!group || rowGroup === group)) {
+      return { rowIndex: i + 2, values: rows[i] };
     }
   }
   return null;
@@ -129,10 +147,16 @@ function rowToEntry(v) {
   };
 }
 
-function cleanSide(side) {
-  var s = String(side || "").toLowerCase();
-  if (s.indexOf("bride") !== -1) return "Bride";
-  if (s.indexOf("groom") !== -1) return "Groom";
+function cleanGroup(side) {
+  var raw = String(side || "").trim();
+  for (var i = 0; i < INVITE_GROUPS.length; i++) {
+    if (INVITE_GROUPS[i].toLowerCase() === raw.toLowerCase()) {
+      return INVITE_GROUPS[i];
+    }
+  }
+  var s = raw.toLowerCase();
+  if (s.indexOf("bride") !== -1) return "Bride - All Events";
+  if (s.indexOf("groom") !== -1) return "Groom - All Events";
   return "Other";
 }
 
@@ -142,18 +166,30 @@ function json(obj) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-// --- One-time setup: build the master tab and the two sharing views -------
+// --- One-time setup: build the master tab and the 5 link view tabs --------
 
 /**
  * Run this once from the editor. Creates the RSVPs master tab (if missing)
- * and rebuilds the live "Groom" and "Bride" views. Safe to re-run; it only
- * rewrites the two view tabs, never the master data.
+ * and rebuilds the 5 live tabs (3 Bride links + 2 Groom links). Safe to
+ * re-run; it only rewrites the view tabs, never the master data.
  */
 function setupSheets() {
   var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-  getDataSheet();
-  buildSideView(ss, "Groom");
-  buildSideView(ss, "Bride");
+  getDataSheet(ss);
+  for (var i = 0; i < INVITE_GROUPS.length; i++) {
+    buildSideView(ss, INVITE_GROUPS[i]);
+  }
+  removeLegacyViewIfAutoGenerated(ss, "Groom");
+  removeLegacyViewIfAutoGenerated(ss, "Bride");
+}
+
+function removeLegacyViewIfAutoGenerated(ss, name) {
+  var sh = ss.getSheetByName(name);
+  if (!sh) return;
+  var formula = sh.getRange("A6").getFormula();
+  if (formula && formula.indexOf("FILTER(" + DATA_SHEET) !== -1) {
+    ss.deleteSheet(sh);
+  }
 }
 
 function buildSideView(ss, side) {

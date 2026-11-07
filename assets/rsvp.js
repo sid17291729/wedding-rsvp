@@ -82,6 +82,7 @@ async function handleCredentialResponse(response) {
       const body = new URLSearchParams();
       body.set("action", "lookup");
       body.set("credential", idToken);
+      body.set("side", SIDE);
       const res = await fetch(SCRIPT_URL, { method: "POST", body });
       const out = await res.json();
       if (out.result === "success" && out.found && out.entry) {
@@ -188,4 +189,40 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
+// --- Floating event cards scroll reveal -----------------------------------
+
+function initEventCardsReveal() {
+  const cards = document.querySelectorAll(".event-card");
+  if (!cards.length) return;
+
+  const prefersReducedMotion =
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (prefersReducedMotion || !("IntersectionObserver" in window)) {
+    cards.forEach((card) => card.classList.add("is-visible"));
+    return;
+  }
+
+  cards.forEach((card) => card.classList.add("will-reveal"));
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    {
+      threshold: 0.15,
+      rootMargin: "0px 0px -30px 0px"
+    }
+  );
+
+  cards.forEach((card) => observer.observe(card));
+}
+
+initEventCardsReveal();
 initGoogleSignIn();

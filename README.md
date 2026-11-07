@@ -3,15 +3,22 @@
 A static RSVP website with two separate invitation URLs (one per side) that
 saves every response into a Google Sheet.
 
-- `siddharth/` → Groom's side RSVP page
-- `nandita/` → Bride's side RSVP page
-- `index.html` → simple landing page linking to both (optional to share)
+- **Groom's side (`siddharth/`):**
+  - `siddharth/` → All 4 events (Haldi, Sangeet, Wedding, Reception)
+  - `siddharth/wedding-reception/` → Wedding & Reception
+- **Bride's side (`nandita/`):**
+  - `nandita/` → All 4 events (Haldi, Sangeet, Wedding, Reception)
+  - `nandita/sangeet-reception/` → Sangeet & Reception
+  - `nandita/reception/` → Reception only
+- `index.html` → simple landing page linking to both main pages (optional to share)
 
 Guests sign in with Google, so each person has **one RSVP they can come back
-and edit**. All responses are stored in a single **RSVPs** tab (columns
-Timestamp, Name, Email, Phone, Attending, Guests, Message, Side), and two
-live, auto-updating views — **Groom** and **Bride** — are generated from it
-for sharing with organizers, each with a headcount summary at the top.
+and edit** per invitation link. All responses are stored in a single **RSVPs**
+tab (columns Timestamp, Name, Email, Phone, Attending, Guests, Message, Side),
+and **5 live, auto-updating tabs** (`Bride - All Events`,
+`Bride - Sangeet & Reception`, `Bride - Reception`, `Groom - All Events`, and
+`Groom - Wedding & Reception`) are generated in the same sheet — each with its
+own headcount summary at the top.
 
 ## Setup — Part 1: Google Sign-In (OAuth Client ID)
 
@@ -42,9 +49,8 @@ for sharing with organizers, each with a headcount summary at the top.
 2. **Extensions → Apps Script**, delete any code, and paste the full contents
    of [`apps-script/Code.gs`](apps-script/Code.gs). Save (Ctrl+S).
 3. In the editor's function dropdown, select **setupSheets** and click **Run**.
-   Authorize when prompted. This creates the **RSVPs** master tab and the live
-   **Groom** / **Bride** views. *(This rewrites the Groom/Bride tabs as filtered
-   views — move any real data out first. Test rows can be ignored.)*
+   Authorize when prompted. This creates the **RSVPs** master tab and the 5 live
+   per-link tabs (3 for Bride's links, 2 for Groom's links).
 4. **Deploy → New deployment → Web app** → *Execute as* **Me**, *Who has
    access* **Anyone** → **Deploy**, authorize, and copy the **Web app URL**
    (`https://script.google.com/macros/s/AKfycb.../exec`).

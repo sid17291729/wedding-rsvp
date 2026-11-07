@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nandita &amp; Siddharth — RSVP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../assets/style.css" />
+</head>
+<body class="rsvp" data-side="Bride - Reception">
+
+  <section class="hero">
+    <div class="bg-photo" aria-hidden="true">
+      <div class="bg-blur"></div>
+      <div class="bg-main"></div>
+    </div>
+    <div class="hero-content">
+      <div class="monogram">N &middot; S</div>
+      <h1>Nandita <span class="amp">&amp;</span> Siddharth</h1>
+      <p class="hero-message">
+        Together with their families, they joyfully invite you to celebrate
+        the beginning of their new life together. Your presence would mean
+        the world to them.
+      </p>
+      <a class="scroll-cue" href="#events">Reception &amp; RSVP &darr;</a>
+    </div>
+  </section>
+
+  <!-- Event Details: Reception Only -->
+  <section class="events-section" id="events">
+    <div class="events-header">
+      <div class="monogram">The Celebration</div>
+      <h2>Wedding Reception</h2>
+      <p class="events-intro">We would be honoured to have you celebrate this special evening with us.</p>
+    </div>
+
+    <div class="events-grid">
+      <article class="event-card">
+        <div class="event-tag">Celebration</div>
+        <h3 class="event-title">Reception</h3>
+        <div class="event-divider" aria-hidden="true"></div>
+        <p class="event-date">Sunday, DD Month YYYY</p>
+        <p class="event-time">7:00 PM Onwards</p>
+        <p class="event-venue">
+          <strong>Royal Gardens</strong>
+          Venue Name, City
+        </p>
+        <span class="event-note">Dress Code: Formal / Evening Traditional</span>
+        <!-- Optional map link: <br /><a class="event-map-link" href="https://maps.google.com" target="_blank" rel="noopener">View on Map</a> -->
+      </article>
+    </div>
+
+    <div class="events-cta">
+      <a class="events-rsvp-cue" href="#rsvp">Kindly RSVP Below &darr;</a>
+    </div>
+  </section>
+
+  <section class="form-section" id="rsvp">
+    <main class="card">
+      <div id="signin-gate">
+        <div class="monogram">RSVP</div>
+        <h2>Kindly Respond</h2>
+        <p class="invite-line">Please sign in with Google so we can save your RSVP — and so you can come back and edit it anytime.</p>
+        <div id="google-btn"></div>
+        <p id="signin-error" class="hidden"></p>
+      </div>
+
+      <div id="form-intro" class="hidden">
+        <div class="monogram">RSVP</div>
+        <h2 id="form-heading">Kindly Respond</h2>
+        <p class="invite-line" id="form-subtitle">We would love to know if you can join us.</p>
+        <p id="signed-in-as" class="signed-in"></p>
+      </div>
+
+      <form id="rsvp-form" class="hidden">
+        <div class="field">
+          <label for="name">Your Full Name</label>
+          <input type="text" id="name" name="name" required autocomplete="name" placeholder="e.g. Priya Verma" />
+        </div>
+
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" readonly />
+        </div>
+
+        <div class="field">
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" name="phone" required autocomplete="tel" inputmode="tel" pattern="[0-9+\-\s\(\)]{7,15}" title="Please enter a valid phone number" placeholder="e.g. 98765 43210" />
+        </div>
+
+        <div class="field">
+          <label>Will you be attending?</label>
+          <div class="choice-row">
+            <span>
+              <input type="radio" id="attend-yes" name="attending" value="Yes" required />
+              <label class="choice" for="attend-yes">Joyfully Accept</label>
+            </span>
+            <span>
+              <input type="radio" id="attend-no" name="attending" value="No" />
+              <label class="choice" for="attend-no">Regretfully Decline</label>
+            </span>
+          </div>
+        </div>
+
+        <div class="field" id="guests-field">
+          <label for="guests">Number of Guests in Your Family (including you)</label>
+          <input type="number" id="guests" name="guests" min="1" max="15" value="1" />
+        </div>
+
+        <div class="field">
+          <label for="message">Message for the Couple (optional)</label>
+          <textarea id="message" name="message" placeholder="Your wishes…"></textarea>
+        </div>
+
+        <button type="submit" id="submit-btn">Send RSVP</button>
+        <p id="form-error" class="hidden"></p>
+      </form>
+
+      <div id="thank-you" class="hidden">
+        <p class="big">Thank you!</p>
+        <p id="thank-you-text"></p>
+      </div>
+
+      <p class="footer-note">With love, Nandita &amp; Siddharth</p>
+    </main>
+  </section>
+
+  <script src="https://accounts.google.com/gsi/client"></script>
+  <script src="../../assets/config.js"></script>
+  <script src="../../assets/rsvp.js"></script>
+</body>
+</html>
