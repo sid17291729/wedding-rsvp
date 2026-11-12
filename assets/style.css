@@ -475,6 +475,63 @@ body.rsvp {
   pointer-events: none;
 }
 
+.event-card--haldi,
+.event-card--sangeet,
+.event-card--wedding,
+.event-card--reception {
+  background: transparent;
+  border: none;
+  border-radius: 14px;
+  padding: 3.4rem 3.1rem;
+  isolation: isolate;
+}
+
+.event-card--haldi::before,
+.event-card--sangeet::before,
+.event-card--wedding::before,
+.event-card--reception::before {
+  inset: 0;
+  border-radius: inherit;
+  border-style: solid;
+  border-width: 34px 32px 34px 34px;
+  border-image-slice: 74 69 74 74 fill;
+  border-image-repeat: stretch;
+  clip-path: inset(0 round 14px);
+  z-index: -1;
+}
+
+.event-card--haldi::before {
+  border-image-source: url("haldi-border.jpg");
+}
+
+.event-card--sangeet::before {
+  border-image-source: url("sangeet-border.jpg");
+}
+
+.event-card--wedding::before {
+  border-image-source: url("wedding-border.jpg");
+}
+
+.event-card--reception::before {
+  border-image-source: url("reception-border.jpg");
+}
+
+@media (max-width: 480px) {
+  .event-card--haldi,
+  .event-card--sangeet,
+  .event-card--wedding,
+  .event-card--reception {
+    padding: 2.9rem 2.4rem;
+  }
+
+  .event-card--haldi::before,
+  .event-card--sangeet::before,
+  .event-card--wedding::before,
+  .event-card--reception::before {
+    border-width: 28px 26px 28px 28px;
+  }
+}
+
 .event-card.will-reveal {
   opacity: 0;
   transform: translateY(36px);
