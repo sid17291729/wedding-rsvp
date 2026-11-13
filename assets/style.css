@@ -29,24 +29,41 @@ body {
 }
 
 .card {
-  background: #fffdf9;
+  background: transparent;
   max-width: 480px;
   width: 100%;
-  border-radius: 18px;
+  border-radius: 14px;
   box-shadow: var(--shadow);
-  padding: 3rem 2.5rem;
+  padding: 3.8rem 3.4rem;
   text-align: center;
-  border: 1px solid rgba(176, 141, 62, 0.25);
+  border: none;
   position: relative;
+  isolation: isolate;
 }
 
 .card::before {
   content: "";
   position: absolute;
-  inset: 10px;
-  border: 1px solid rgba(176, 141, 62, 0.35);
-  border-radius: 12px;
+  inset: 0;
+  border-radius: inherit;
+  border-style: solid;
+  border-width: 34px 32px 34px 34px;
+  border-image-source: url("rsvp-border.jpg");
+  border-image-slice: 74 69 74 74 fill;
+  border-image-repeat: stretch round;
+  clip-path: inset(0 round 14px);
   pointer-events: none;
+  z-index: -1;
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 3.1rem 2.5rem;
+  }
+
+  .card::before {
+    border-width: 28px 26px 28px 28px;
+  }
 }
 
 .monogram {
