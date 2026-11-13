@@ -340,14 +340,16 @@ html {
 body.rsvp {
   display: block;
   padding: 0;
-  background-color: var(--cream);
-  background-image:
-    radial-gradient(circle at 12% 30%, rgba(176, 141, 62, 0.08), transparent 45%),
-    radial-gradient(circle at 88% 65%, rgba(124, 45, 58, 0.06), transparent 45%);
+  background-color: #f8f0dc;
+  background-image: url("paper-bg.jpg");
+  background-repeat: repeat;
+  background-position: top center;
+  background-size: max(100%, 720px) auto;
 }
 
 .hero {
   position: relative;
+  isolation: isolate;
   min-height: 100vh;
   display: flex;
   align-items: center;
